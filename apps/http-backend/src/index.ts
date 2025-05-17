@@ -5,6 +5,8 @@ import { middleware } from "./middleware.js";
 import {CreateUserSchema, SigninSchema, CreateRoomSchema} from "@repo/common/types";
 import {prismaClient} from "@repo/db/client"
 import cors from "cors"
+import { Request, Response } from "express";
+
 
 const app = express();
 app.use(express.json())
@@ -40,38 +42,35 @@ app.post("/signup", async (req,res) => {
     
 })
 
-app.post("/signin",async(req,res) => {
-    const parseData  = SigninSchema.safeParse(req.body);
-    if(!parseData.success){
-        res.json({
-            message  : "Incorrect inputs"
-        })
-        return
-    }
+app.post("/signin", async (req, res) => {
+  const parseData = SigninSchema.safeParse(req.body);
+  if (!parseData.success) {
+    res.status(400).json({ message: "Incorrect inputs" });
+    return;
+  }
 
-    const user = await prismaClient.user.findFirst({
-        where:{
-            email : parseData.data.username,
-            password : parseData.data.password
-        }
-    })
+  const { username, password } = parseData.data;
 
-    if(!user){
-        res.status(403).json({
-            mesasge : "Not authorized"
-        })
-        return;
-    }
+  const user = await prismaClient.user.findFirst({
+    where: {
+      email: username,
+      password: password,
+    },
+  });
 
+  if (!user) {
+    res.status(403).json({ message: "Not authorized" }); // fixed typo
+    return;
+  }
 
-    const token = jwt.sign({
-        userId : user?.id
-    }, JWT_SECRET)
+  const token = jwt.sign({ userId: user.id }, JWT_SECRET);
 
-    res.json({
-        token
-    })
-})
+  res.json({
+    token,
+    name: user.name,
+  });
+});
+
 
 app.post("/room", middleware,async(req,res) => {
     const parseData  = CreateRoomSchema.safeParse(req.body);
@@ -137,5 +136,62 @@ app.get("/room/:slug",async(req,res)=>{
         room
     })
 })
+
+app.get("/my-rooms", middleware, async (req, res) => {
+  //@ts-ignore
+  const userId = req.userId;
+
+  try {
+    const rooms = await prismaClient.room.findMany({
+      where: {
+        adminId: userId,
+      },
+    });
+
+    res.json({ rooms });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Failed to fetch rooms" });
+  }
+});
+
+
+//@ts-ignore
+app.delete('/room/:id', middleware, async (req: Request, res: Response) => {
+  //@ts-ignore
+  const userId = req.userId;
+
+  // Parse the id param to number because your model uses Int
+//@ts-ignore
+  const roomId = parseInt(req.params.id, 10);
+
+  if (isNaN(roomId)) {
+    return res.status(400).json({ message: "Invalid room id" });
+  }
+
+  try {
+    const room = await prismaClient.room.findUnique({
+      where: { id: roomId },
+    });
+
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+
+    if (room.adminId !== userId) {
+      return res.status(403).json({ message: "Not authorized to delete this room" });
+    }
+
+    const deletedRoom = await prismaClient.room.delete({
+      where: { id: roomId },
+    });
+
+    res.status(200).json({ message: "Room deleted successfully", deletedRoom });
+  } catch (error) {
+    console.error("Error deleting room:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 app.listen(3001)
