@@ -1,7 +1,7 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
@@ -16,24 +16,6 @@
     "dev": {
       "cache": false,
       "persistent": true
-    }
-  },
-  "globalDependencies": [".env", "turbo.json"],
-  "packageOverrides": {
-    "packages/common": {
-      "build": {
-        "outputs": []
-      }
-    },
-    "packages/db": {
-      "build": {
-        "outputs": []
-      }
-    },
-    "packages/backend-common": {
-      "build": {
-        "outputs": []
-      }
     }
   }
 }
