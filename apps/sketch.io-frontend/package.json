@@ -35,7 +35,6 @@
     "typescript": "^5"
   },
   "turbo": {
-  "outputs": [".next/**", "out/**"]
-}
-
+    "outputs": [".next/**", "out/**"]
+  }
 }
