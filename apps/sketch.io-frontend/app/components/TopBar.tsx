@@ -84,7 +84,7 @@ export function TopBar({ icons, roomName }: TopBarProps) {
             onClick={btn.onClick}
             activated={btn.activated}
             title={btn.title}
-            //@ts-ignore
+            // @ts-expect-error
             className="h-7 w-7 sm:h-10 sm:w-10"
           />
         ))}

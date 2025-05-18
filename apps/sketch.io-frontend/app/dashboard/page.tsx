@@ -11,7 +11,7 @@ import Footer  from "../components/Footer";
 interface Room {
   id: string;
   slug: string;
-  name: string
+  name?: string
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -58,7 +58,7 @@ export default function Dashboard() {
       );
 
 
-    } catch (error) {
+    } catch (error){
       console.error(error);
     }
   };
@@ -104,7 +104,7 @@ export default function Dashboard() {
       }
 
       router.push(`/canvas/${roomId}`);
-    } catch (error) {
+    } catch (error){
       console.error("Error while joining room:", error);
       alert("Failed to join room. Please try again later.");
     }
@@ -134,7 +134,7 @@ export default function Dashboard() {
       }
 
       setRooms((prev) => prev.filter((room) => room.id !== roomId));
-    } catch (error) {
+    } catch {
       alert("Error deleting room");
     }
   };

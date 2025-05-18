@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { IconButton } from "./IconButton";
+import React from "react";
 import { TopBar } from "./TopBar";
 import {
   Circle,
@@ -79,17 +79,18 @@ export function Canvas({
     }
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [selectedTool]);
 
-  const icons = [
-    { tool: "pencil", icon: <Pencil />, label: "Pencil" },
-    { tool: "line", icon: <Slash />, label: "Line" },
-    { tool: "arrow", icon: <ArrowRight />, label: "Arrow" },
-    { tool: "rect", icon: <RectangleHorizontalIcon />, label: "Rectangle" },
-    { tool: "circle", icon: <Circle />, label: "Circle" },
-    { tool: "text", icon: <TextCursorInput />, label: "Text" },
-    { tool: "eraser", icon: <Eraser />, label: "Eraser" },  // eraser icon here
-  ];
+const icons: { tool: Tool; icon: React.ReactElement; label: string }[] = [
+  { tool: "pencil", icon: <Pencil />, label: "Pencil" },
+  { tool: "line", icon: <Slash />, label: "Line" },
+  { tool: "arrow", icon: <ArrowRight />, label: "Arrow" },
+  { tool: "rect", icon: <RectangleHorizontalIcon />, label: "Rectangle" },
+  { tool: "circle", icon: <Circle />, label: "Circle" },
+  { tool: "text", icon: <TextCursorInput />, label: "Text" },
+  { tool: "eraser", icon: <Eraser />, label: "Eraser" },
+];
+
 
   return (
     <div className="h-screen w-screen bg-zinc-900 overflow-hidden relative">
@@ -107,7 +108,8 @@ export function Canvas({
             icon,
             title: label,
             activated: selectedTool === tool,
-            onClick: () => setSelectedTool(tool),
+            onClick: () => setSelectedTool(tool as Tool),
+
           }))}
         />
       </div>

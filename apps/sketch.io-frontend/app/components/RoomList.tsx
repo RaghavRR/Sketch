@@ -73,26 +73,27 @@ const getDisplayName = (room: Room) => {
               {/* Card body */}
               <div className="p-6 flex flex-col flex-grow justify-between text-purple-200 font-mono text-sm">
                 <div className="mb-6 flex items-center gap-3 select-text text-purple-500">
-                  <span className="truncate font-semibold text-purple-600">
-                    ID: {room.id}
-                  </span>
-                  <ClipboardCopy
-                    className="w-5 h-5 cursor-pointer text-purple-500 hover:text-purple-700 transition-colors duration-200"
-                    onClick={() => handleCopy(room.id)}
+                  <span className="truncate font-semibold text-purple-600">ID: {room.id}</span>
+
+                  <span
                     title="Copy room ID"
                     role="button"
                     tabIndex={0}
                     aria-label={`Copy room ID ${room.id}`}
+                    onClick={() => handleCopy(room.id)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") handleCopy(room.id);
                     }}
-                  />
+                    className="inline-flex cursor-pointer text-purple-500 hover:text-purple-700 transition-colors duration-200"
+                  >
+                    <ClipboardCopy className="w-5 h-5" />
+                  </span>
+
                   {copiedId === room.id && (
-                    <span className="text-green-400 text-xs ml-2 select-none font-semibold">
-                      Copied!
-                    </span>
+                    <span className="text-green-400 text-xs ml-2 select-none font-semibold">Copied!</span>
                   )}
                 </div>
+
 
                 <p className="mb-8 font-semibold uppercase tracking-wider text-purple-500">
                   Status:{" "}

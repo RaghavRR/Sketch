@@ -11,6 +11,9 @@ importers:
       '@cloudflare/next-on-pages':
         specifier: ^1.13.12
         version: 1.13.12(vercel@41.7.8)(wrangler@4.15.2)
+      '@types/react':
+        specifier: ^19.1.4
+        version: 19.1.4
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -1213,6 +1216,9 @@ packages:
 
   '@types/react@19.1.0':
     resolution: {integrity: sha512-UaicktuQI+9UKyA4njtDOGBD/67t8YEBt2xdfqu8+gP9hqPUPsiXlNPcpS2gVdjmis5GKPG3fCxbQLVgxsQZ8w==}
+
+  '@types/react@19.1.4':
+    resolution: {integrity: sha512-EB1yiiYdvySuIITtD5lhW4yPyJ31RkJkkDw794LaQYrxCSaQV/47y5o1FMC4zF9ZyjUjzJMZwbovEnT5yHTW6g==}
 
   '@types/send@0.17.4':
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
@@ -5364,6 +5370,10 @@ snapshots:
       '@types/react': 19.1.0
 
   '@types/react@19.1.0':
+    dependencies:
+      csstype: 3.1.3
+
+  '@types/react@19.1.4':
     dependencies:
       csstype: 3.1.3
 

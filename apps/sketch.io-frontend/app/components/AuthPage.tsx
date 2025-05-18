@@ -44,7 +44,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         const data = await res.json();
         setError(data.message || "Something went wrong");
       }
-    } catch (err) {
+    } catch {
       setError("Network error");
     }
   };
@@ -131,7 +131,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
           <p className="mt-8 text-center text-purple-900 font-medium drop-shadow-sm select-none">
             {isSignin ? (
               <>
-                Don't have an account?{" "}
+                Don&rsquo;t have an account?{" "}
                 <a
                   href="/signup"
                   className="text-purple-700 hover:underline font-semibold cursor-pointer"
