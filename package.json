@@ -12,7 +12,9 @@
     "@cloudflare/next-on-pages": "^1.13.12",
     "prettier": "^3.5.3",
     "turbo": "^2.5.3",
-    "typescript": "5.8.2"
+    "typescript": "5.8.2",
+    "vercel": "^41.7.8",
+    "wrangler": "^4.15.2"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
