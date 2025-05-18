@@ -1,16 +1,20 @@
 "use client";
 
-import { WS_URL } from "@/config";
 import { useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
 
 export function RoomCanvas({ roomId }: { roomId: string }) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
   useEffect(() => {
-    const ws = new WebSocket(
-      `${WS_URL}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDQ5OWJlOC1kOTFiLTQ1OWEtYTgxNi1mMGU2OGYwYjM0NTciLCJpYXQiOjE3NDczOTIxNDJ9.UE_BP6-mdNVDKkx9ClJO4LeBinUEaYWLB1g4G1JRdlQ`
-    );
+    const token = localStorage.getItem("token");
+    if (!token || !WS_URL) {
+      console.error("Missing token or WebSocket URL");
+      return;
+    }
+
+    const ws = new WebSocket(`${WS_URL}?token=${token}`);
 
     ws.onopen = () => {
       setSocket(ws);
@@ -33,10 +37,14 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
       }
       ws.close();
     };
-  }, [roomId]);
+  }, [roomId, WS_URL]);
 
   if (!socket) {
-    return <div>Connecting to server...</div>;
+    return (
+      <div className="text-center text-purple-700 font-medium">
+        Connecting to server...
+      </div>
+    );
   }
 
   return (

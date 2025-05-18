@@ -6,23 +6,22 @@ interface CreateRoomProps {
   onRoomCreated: (room: { slug: string; id: string }) => void;
 }
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export function CreateRoom({ onRoomCreated }: CreateRoomProps) {
   const [roomName, setRoomName] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleCreate = async () => {
-      if (!roomName.trim()) {
-          alert("Room name cannot be empty");
-          return;
-        }
+    if (!roomName.trim()) {
+      alert("Room name cannot be empty");
+      return;
+    }
 
-        if (roomName.trim().length < 3) {
-          alert("Room name must be at least 3 characters");
-          return;
-        }
-
-
+    if (roomName.trim().length < 3) {
+      alert("Room name must be at least 3 characters");
+      return;
+    }
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -33,7 +32,7 @@ export function CreateRoom({ onRoomCreated }: CreateRoomProps) {
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:3001/room", {
+      const response = await fetch(`${BASE_URL}/room`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +59,7 @@ export function CreateRoom({ onRoomCreated }: CreateRoomProps) {
 
   return (
     <section className="w-full max-w-xl bg-white/40 border border-purple-100 backdrop-blur-xl p-10 rounded-3xl shadow-[0_12px_40px_rgba(124,58,237,0.15)] transition-all hover:shadow-[0_16px_48px_rgba(124,58,237,0.2)]">
-      <h2 className="text-1xl text-2xl font-bold text-center text-gray-800 mb-8">
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
         Create a New Room🎨
       </h2>
 

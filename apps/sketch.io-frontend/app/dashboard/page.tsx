@@ -14,6 +14,8 @@ interface Room {
   name: string
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function Dashboard() {
   const router = useRouter();
 
@@ -37,7 +39,7 @@ export default function Dashboard() {
 
   const fetchRooms = async (token: string) => {
     try {
-      const response = await fetch("http://localhost:3001/my-rooms", {
+      const response = await fetch(`${API_BASE_URL}/my-rooms`, {
         headers: {
           Authorization: `${token}`,
         },
@@ -88,7 +90,7 @@ export default function Dashboard() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/room-by-id/${roomId}`, {
+      const response = await fetch(`${API_BASE_URL}/room-by-id/${roomId}`, {
         method: "GET",
         headers: {
           Authorization: `${token}`,
@@ -118,7 +120,7 @@ export default function Dashboard() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/room/${roomId}`, {
+      const response = await fetch(`${API_BASE_URL}/room/${roomId}`, {
         method: "DELETE",
         headers: {
           Authorization: `${token}`,

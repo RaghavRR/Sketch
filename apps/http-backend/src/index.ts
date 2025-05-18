@@ -11,6 +11,9 @@ import {
 import { prismaClient } from "@repo/db/client";
 import cors from "cors";
 import { Request, Response } from "express";
+import dotenv from "dotenv";
+dotenv.config();
+const PORT = process.env.PORT;
 
 const app = express();
 app.use(express.json());
@@ -235,4 +238,6 @@ app.delete('/room/:id', middleware, async (req: Request, res: Response) => {
 });
 
 
-app.listen(3001)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
