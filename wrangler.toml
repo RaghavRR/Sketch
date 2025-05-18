@@ -2,4 +2,8 @@ name = "sketch-io"
 compatibility_date = "2024-06-01"
 
 [build]
-upload = { format = "directory", dir = "./.vercel/output/static" }
+command = "npx next build && npx next-on-pages"
+upload = { format = "directory", dir = ".vercel/output/static" }
+
+[functions]
+directory = ".vercel/output/functions"

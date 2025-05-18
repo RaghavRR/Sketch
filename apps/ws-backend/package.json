@@ -24,7 +24,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-   "turbo": {
-    "outputs": ["dist/**"]
-  }
+"turbo": {
+  "outputs": [".vercel/output/**", ".next/**", "out/**"]
+}
+
 }
