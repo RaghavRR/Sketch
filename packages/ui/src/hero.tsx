@@ -13,19 +13,27 @@ const Hero = () => {
         <div className="flex flex-col md:flex-row items-center">
           <div className="w-full md:w-1/2 mb-8 md:mb-0 md:pr-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
-              Whiteboard <span className="text-purple-600">reimagined</span> for the digital age
+              Whiteboard <span className="bg-gradient-to-r from-purple-600 to-teal-500 text-transparent bg-clip-text font-semibold">
+              reimagined
+            </span> for the digital age
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8">
               Create beautiful hand-drawn diagrams, wireframes, and illustrations with our intuitive whiteboard. Collaborate in real-time with your team.
             </p>
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                <Link href={"/signin"}>
-                    <Button variant="primary" size="lg">Sign in</Button>
-                </Link>
-                <Link href={"/signup"}>
-                    <Button variant="outline" size="lg">Sign up</Button>
-                </Link>
+            <div className="flex flex-col items-center sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
+              <Link
+                href="/signin"
+                className="bg-gradient-to-r from-purple-600 to-teal-500 hover:from-purple-700 hover:to-teal-600 transition text-white px-6 py-3 rounded-xl text-lg font-semibold shadow-md inline-block text-center"
+                aria-label="Sign in"
+              >
+                Sign in
+              </Link>
+
+              <Link href={"/signup"}>
+                <Button variant="outline" size="lg">Sign up</Button>
+              </Link>
             </div>
+
             
             <div className="mt-8 flex items-center">
               <div className="flex -space-x-2">

@@ -1,4 +1,3 @@
-// page.tsx (Dashboard)
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { Header } from "../components/Header";
 import { CreateRoom } from "../components/CreateRoom";
 import { RoomList } from "../components/RoomList";
-import { Footer } from "../components/Footer";
+import Footer  from "../components/Footer";
 
 interface Room {
   id: string;
-  name: string;
+  slug: string;
+  name: string
 }
 
 export default function Dashboard() {
@@ -48,24 +48,63 @@ export default function Dashboard() {
       }
 
       const data = await response.json();
-      setRooms(data.rooms || []);
+      setRooms(
+        (data.rooms || []).map((room: any) => ({
+          id: room.id,
+          slug: room.slug || `my-room-${room.id.toString().slice(0, 6)}`,
+        }))
+      );
+
+
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleRoomCreated = (room: Room) => {
-    setRooms((prevRooms) => [...prevRooms, room]);
+  const handleRoomCreated = (room: { id: string; slug: string }) => {
+    setRooms((prevRooms) => [...prevRooms, { id: room.id, slug: room.slug }]);
   };
+
+
 
   const handleLogout = () => {
     localStorage.clear();
     router.push("/signin");
   };
 
-  const handleJoinRoomById = () => {
-    if (joinRoomId.trim()) {
-      router.push(`/canvas/${joinRoomId.trim()}`);
+  const handleJoinRoomById = async () => {
+    const roomId = joinRoomId.trim();
+    const token = localStorage.getItem("token");
+
+    if (!roomId) {
+      alert("Please enter a Room ID.");
+      return;
+    }
+
+    if (!token) {
+      alert("You must be logged in to join a room.");
+      router.push("/signin");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3001/room-by-id/${roomId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        alert(errorData.message || "Room not found");
+        return;
+      }
+
+      router.push(`/canvas/${roomId}`);
+    } catch (error) {
+      console.error("Error while joining room:", error);
+      alert("Failed to join room. Please try again later.");
     }
   };
 
@@ -99,35 +138,33 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white text-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-teal-50 text-gray-900 flex flex-col">
       {/* Header */}
       <Header name={name} onLogout={handleLogout} />
 
       {/* Main Content */}
-      <main className="flex-grow w-full px-4 sm:px-6 lg:px-8 py-10">
-        <div className="max-w-7xl mx-auto space-y-12">
+      <main className="flex-grow w-full px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto space-y-16">
           {/* Side-by-side container */}
-          <div className="flex flex-col lg:flex-row gap-8 justify-center items-start">
+          <div className="flex flex-col lg:flex-row gap-10 justify-center items-center w-full max-w-7xl mx-auto">
             {/* Create Room */}
             <CreateRoom onRoomCreated={handleRoomCreated} />
 
             {/* Join Room */}
-            <section className="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl w-full max-w-md lg:max-w-xl">
-              <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-                Join Room by ID
-              </h2>
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+            <section className="w-full max-w-xl bg-white/40 border border-purple-100 backdrop-blur-xl p-10 rounded-3xl shadow-[0_12px_40px_rgba(124,58,237,0.15)] transition-all hover:shadow-[0_16px_48px_rgba(124,58,237,0.2)]">
+              <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Join Room by ID🗝️</h2>
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-center">
                 <input
                   type="text"
                   value={joinRoomId}
                   onChange={(e) => setJoinRoomId(e.target.value)}
                   placeholder="Enter Room ID"
-                  className="flex-grow border border-gray-300 rounded-xl px-5 py-3 text-lg placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-300 transition"
+                  className="flex-grow bg-white/80 border border-gray-300 rounded-2xl px-6 py-4 text-lg placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-purple-300 transition disabled:opacity-60 disabled:cursor-not-allowed shadow-inner mx-auto sm:mx-0"
                   aria-label="Enter room ID to join"
                 />
                 <button
                   onClick={handleJoinRoomById}
-                  className="px-6 py-3 rounded-xl text-white font-semibold transition bg-teal-600 hover:bg-teal-700 w-full sm:w-auto"
+                  className="px-7 py-4 rounded-2xl font-semibold text-white text-lg transition-all shadow-lg bg-gradient-to-r from-teal-600 to-purple-500 hover:from-teal-700 hover:to-purple-600"
                   aria-label="Join room by ID"
                 >
                   Join Room
@@ -137,7 +174,16 @@ export default function Dashboard() {
           </div>
 
           {/* Room List */}
-          <RoomList rooms={rooms} onDelete={handleDeleteRoom} />
+          <RoomList
+            rooms={rooms.map((room) => ({
+              id: room.id,
+              slug: room.slug,
+              name: room.name,
+            }))}
+            onDelete={handleDeleteRoom}
+          />
+
+
         </div>
       </main>
 

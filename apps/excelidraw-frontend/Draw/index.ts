@@ -74,89 +74,79 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket
         startX = e.clientX
         startY = e.clientY
     })
-    canvas.addEventListener("mouseup", (e)=>{
-        clicked = false
-        const width = e.clientX - startX;
-        const height = e.clientY - startY;
-        //@ts-ignore
-        const selectedTool = window.selectedTool;
-        let shape: Shape | null = null
+// Inside canvas.onmousemove eraser section:
+canvas.addEventListener("mousemove", (e) => {
+  //@ts-ignore
+  const selectedTool = window.selectedTool;
+  updateCursor(selectedTool);
 
-        if(selectedTool === "rect"){
-            shape= {
-                type: "react",
-                x : startX,
-                y : startY,
-                height,
-                width 
-            }
-            
-        }else if(selectedTool === "circle"){
-            const radius = Math.max(width, height)/2;
-            shape= {
-                type: "circle",
-                radius : radius,
-                centerX : startX + radius,
-                centerY : startY + radius
-            }
-            
-        } else if(selectedTool === "eraser"){
-            // For eraser, let's say it's a rectangle shape that erases
-            shape = {
-                type: "eraser",
-                x: e.clientX,
-                y: e.clientY,
-                width: 20,  // fixed eraser size
-                height: 20
-            }
-            // You will need to add eraser logic to clear shapes or pixels accordingly
-        }
-        if(!shape){
-            return
-        }
-        existingShapes.push(shape);
+  if (clicked) {
+    const width = e.clientX - startX;
+    const height = e.clientY - startY;
+    clearCanvas(existingShapes, canvas, ctx);
+    ctx.strokeStyle = "rgba(255, 255, 255)";
 
-        socket.send(JSON.stringify({
-            type : "chat",
-            message: JSON.stringify({
-                shape
-            }),
-            roomId
-        }))
-    })
+    if (selectedTool === "rect") {
+      ctx.strokeRect(startX, startY, width, height);
+    } else if (selectedTool === "circle") {
+      const radius = Math.max(width, height) / 2;
+      const centerX = startX + radius;
+      const centerY = startY + radius;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.closePath();
+    } else if (selectedTool === "eraser") {
+      // Show bigger eraser rectangle on mouse move as visual feedback
+      const eraserSize = 30;  // increased size
+      ctx.clearRect(e.clientX - eraserSize / 2, e.clientY - eraserSize / 2, eraserSize, eraserSize);
+      ctx.strokeStyle = "rgba(255, 0, 0, 0.8)"; // red border for eraser
+      ctx.lineWidth = 2;
+      ctx.strokeRect(e.clientX - eraserSize / 2, e.clientY - eraserSize / 2, eraserSize, eraserSize);
+    }
+  }
+});
 
-    canvas.addEventListener("mousemove", (e)=>{
-        //@ts-ignore
-        const selectedTool = window.selectedTool;
-        updateCursor(selectedTool);
+// Also update on mouseup eraser size:
+canvas.addEventListener("mouseup", (e) => {
+  clicked = false;
+  const width = e.clientX - startX;
+  const height = e.clientY - startY;
+  //@ts-ignore
+  const selectedTool = window.selectedTool;
+  let shape: Shape | null = null;
 
-        if(clicked){
-            const width = e.clientX - startX;
-            const height = e.clientY - startY;
-            clearCanvas(existingShapes, canvas, ctx)
-            ctx.strokeStyle = "rgba(255, 255, 255)"
-            
-            if(selectedTool === "rect"){
-                ctx.strokeRect(startX,startY, width, height)
-            }else if(selectedTool === "circle"){
-                const radius = Math.max(width, height) /2;
-                const centerX = startX + radius;
-                const centerY = startY + radius;
-                ctx.beginPath()
-                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.closePath()
+  if (selectedTool === "rect") {
+    shape = {
+      type: "react",
+      x: startX,
+      y: startY,
+      height,
+      width,
+    };
+  } else if (selectedTool === "circle") {
+    const radius = Math.max(width, height) / 2;
+    shape = {
+      type: "circle",
+      radius: radius,
+      centerX: startX + radius,
+      centerY: startY + radius,
+    };
+  } else if (selectedTool === "eraser") {
+    // Bigger eraser size here too
+    shape = {
+      type: "eraser",
+      x: e.clientX,
+      y: e.clientY,
+      width: 30,
+      height: 30,
+    };
+  }
+  if (shape) {
+    existingShapes.push(shape);
+  }
+});
 
-            } else if(selectedTool === "eraser"){
-                // Show eraser rectangle on mouse move as visual feedback
-                const eraserSize = 20;
-                ctx.clearRect(e.clientX - eraserSize/2, e.clientY - eraserSize/2, eraserSize, eraserSize);
-                ctx.strokeStyle = "rgba(255, 0, 0, 0.8)"; // red border for eraser
-                ctx.strokeRect(e.clientX - eraserSize/2, e.clientY - eraserSize/2, eraserSize, eraserSize);
-            }
-        }
-        
-    })
 }
 
 function clearCanvas(existingShapes : Shape[], canvas:HTMLCanvasElement, ctx: CanvasRenderingContext2D){

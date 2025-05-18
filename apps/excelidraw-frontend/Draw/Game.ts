@@ -60,49 +60,57 @@ export class Game {
     if (this.tempShape) this.drawShape(this.tempShape);
   }
 
-  drawShape(shape: ShapeData) {
-    this.ctx.strokeStyle = "white";
-    this.ctx.fillStyle = "white";
-    this.ctx.lineWidth = 2;
+// In drawShape method, update eraser drawing:
+drawShape(shape: ShapeData) {
+  this.ctx.strokeStyle = "white";
+  this.ctx.fillStyle = "white";
+  this.ctx.lineWidth = 2;
 
-    if (shape.type === "circle") {
-      this.ctx.beginPath();
-      this.ctx.arc(shape.x, shape.y, shape.r, 0, 2 * Math.PI);
-      this.ctx.stroke();
-    } else if (shape.type === "rect") {
-      this.ctx.strokeRect(shape.x, shape.y, shape.w, shape.h);
-    } else if (shape.type === "pencil") {
-      this.ctx.beginPath();
-      if (shape.points.length === 0) return;
-      this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
-      for (let i = 1; i < shape.points.length; i++) {
-        this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
-      }
-      this.ctx.stroke();
-    } else if (shape.type === "line") {
-      this.ctx.beginPath();
-      this.ctx.moveTo(shape.x1, shape.y1);
-      this.ctx.lineTo(shape.x2, shape.y2);
-      this.ctx.stroke();
-    } else if (shape.type === "arrow") {
-      this.drawArrow(shape.x1, shape.y1, shape.x2, shape.y2);
-    } else if (shape.type === "text") {
-      this.ctx.font = "20px Arial";
-      this.ctx.fillText(shape.text, shape.x, shape.y);
-    } else if (shape.type === "eraser") {
-      this.ctx.strokeStyle = "black";
-      this.ctx.lineWidth = 10;
-      this.ctx.beginPath();
-      if (shape.points.length === 0) return;
-      this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
-      for (let i = 1; i < shape.points.length; i++) {
-        this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
-      }
-      this.ctx.stroke();
-      this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = "white";
+  if (shape.type === "circle") {
+    this.ctx.beginPath();
+    this.ctx.arc(shape.x, shape.y, shape.r, 0, 2 * Math.PI);
+    this.ctx.stroke();
+  } else if (shape.type === "rect") {
+    this.ctx.strokeRect(shape.x, shape.y, shape.w, shape.h);
+  } else if (shape.type === "pencil") {
+    this.ctx.beginPath();
+    if (shape.points.length === 0) return;
+    this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
+    for (let i = 1; i < shape.points.length; i++) {
+      this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
     }
+    this.ctx.stroke();
+  } else if (shape.type === "line") {
+    this.ctx.beginPath();
+    this.ctx.moveTo(shape.x1, shape.y1);
+    this.ctx.lineTo(shape.x2, shape.y2);
+    this.ctx.stroke();
+  } else if (shape.type === "arrow") {
+    this.drawArrow(shape.x1, shape.y1, shape.x2, shape.y2);
+  } else if (shape.type === "text") {
+    this.ctx.font = "20px Arial";
+    this.ctx.fillText(shape.text, shape.x, shape.y);
+  } else if (shape.type === "eraser") {
+    // Increased eraser line width and stroke color to black (erase effect)
+    this.ctx.strokeStyle = "black";
+    this.ctx.lineWidth = 20; // bigger eraser size
+    this.ctx.lineCap = "round"; // smooth edges
+    this.ctx.beginPath();
+    if (shape.points.length === 0) return;
+    this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
+    for (let i = 1; i < shape.points.length; i++) {
+      this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
+    }
+    this.ctx.stroke();
+
+    // Reset
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "white";
+    this.ctx.lineCap = "butt";
   }
+}
+
+
 
   drawArrow(x1: number, y1: number, x2: number, y2: number) {
     const ctx = this.ctx;

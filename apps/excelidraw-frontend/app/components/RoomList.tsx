@@ -5,6 +5,7 @@ interface Room {
   id: string;
   slug: string;
   status?: string;
+  name?: string;
 }
 
 interface RoomListProps {
@@ -25,75 +26,106 @@ export function RoomList({ rooms, onDelete }: RoomListProps) {
     }
   };
 
-  const getDisplayName = (room: Room) => {
-  const trimmedSlug = room.slug?.trim();
-  return !trimmedSlug || trimmedSlug.toLowerCase() === "unnamed room"
-    ? `room-${String(room.id).slice(0, 6)}`
-    : trimmedSlug;
+const getDisplayName = (room: Room) => {
+  const trimmedName = room.name?.trim();
+  const fallback = room.slug || `room-${room.id.slice(0, 6)}`;
+  return trimmedName || fallback;
 };
 
   return (
-    <section className="bg-white p-6 sm:p-10 rounded-3xl shadow-lg max-w-7xl mx-auto">
-      <h2 className="text-4xl font-bold mb-5 text-gray-900">Rooms</h2>
+    <section className="max-w-7xl mx-auto p-8">
+      <h2 className="text-3xl font-bold mb-10 text-center text-black select-none">
+        Your Rooms🚪
+      </h2>
 
       {rooms.length === 0 ? (
-        <p className="text-gray-400 text-lg text-center py-20 italic select-none">
+        <p className="text-gray-400 text-lg text-center py-28 italic select-none">
           No rooms yet.
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-          {rooms.map((room) => (
-            <div
-              key={room.id}
-              className="bg-gradient-to-tr from-white to-gray-50 border border-gray-200 rounded-3xl shadow-md hover:shadow-xl transition-shadow duration-300 p-7 flex flex-col justify-between"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {rooms.map((room, index) => (
+            <article
+              key={`${room.id}-${index}`}
               role="region"
               aria-labelledby={`room-title-${room.id}`}
+              className="
+                bg-white/10 backdrop-blur-md
+                border border-white/20 rounded-3xl
+                shadow-lg shadow-purple-400/10
+                flex flex-col overflow-hidden
+                transition hover:shadow-purple-500/40
+                hover:scale-[1.03] duration-300
+              "
             >
-              <h3
-                id={`room-title-${room.id}`}
-                className="text-2xl font-semibold mb-4 text-gray-900 truncate"
-                title={room.slug}
-              >
-                {getDisplayName(room)}
-              </h3>
+            
+              {/* Glass header with room name and ID */}
+              <header className="bg-white/30 backdrop-blur-lg border-b border-white/40 px-6 py-4 select-text cursor-default">
+                <h3
+                  id={`room-title-${room.id}`}
+                  className="text-xl font-bold text-purple-900 truncate"
+                  title={room.slug}
+                >
+                  {getDisplayName(room)}
+                </h3>
+              </header>
 
-              <div className="flex items-center gap-3 mb-5 text-gray-600 font-mono text-sm select-text">
-                <span className="truncate">ID: {room.id}</span>
-                <ClipboardCopy
-                  className="w-5 h-5 cursor-pointer text-gray-500 hover:text-blue-600 transition-colors duration-200"
-                  onClick={() => handleCopy(room.id)}
-                  title="Copy room ID"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Copy room ID ${room.id}`}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") handleCopy(room.id);
-                  }}
-                />
-                {copiedId === room.id && (
-                  <span className="text-green-600 text-xs ml-2 select-none font-medium">
-                    Copied!
+              {/* Card body */}
+              <div className="p-6 flex flex-col flex-grow justify-between text-purple-200 font-mono text-sm">
+                <div className="mb-6 flex items-center gap-3 select-text text-purple-500">
+                  <span className="truncate font-semibold text-purple-600">
+                    ID: {room.id}
                   </span>
-                )}
+                  <ClipboardCopy
+                    className="w-5 h-5 cursor-pointer text-purple-500 hover:text-purple-700 transition-colors duration-200"
+                    onClick={() => handleCopy(room.id)}
+                    title="Copy room ID"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Copy room ID ${room.id}`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") handleCopy(room.id);
+                    }}
+                  />
+                  {copiedId === room.id && (
+                    <span className="text-green-400 text-xs ml-2 select-none font-semibold">
+                      Copied!
+                    </span>
+                  )}
+                </div>
+
+                <p className="mb-8 font-semibold uppercase tracking-wider text-purple-500">
+                  Status:{" "}
+                  <span
+                    className={`
+                      capitalize font-bold 
+                      ${
+                        room.status?.toLowerCase() === "active" || !room.status
+                          ? "text-green-500"
+                          : "text-purple-300"
+                      }
+                    `}
+                  >
+                    {room.status || "active"}
+                  </span>
+                </p>
+
+                <button
+                  onClick={() => onDelete?.(room.id)}
+                  type="button"
+                  aria-label={`Delete room ${room.slug}`}
+                  className="
+                    self-start inline-flex items-center gap-2 px-5 py-2
+                    bg-red-600 bg-opacity-70 hover:bg-red-700 focus:bg-red-800
+                    text-white font-semibold rounded-xl shadow-md
+                    transition focus:outline-none focus:ring-4 focus:ring-red-400 focus:ring-offset-1
+                  "
+                >
+                  <Trash2 className="w-5 h-5" />
+                  Delete
+                </button>
               </div>
-
-              <p className="mb-6 text-sm font-semibold text-purple-700 tracking-wide">
-                Status:{" "}
-                <span className="capitalize text-gray-700">
-                  {room.status || "active"}
-                </span>
-              </p>
-
-              <button
-                onClick={() => onDelete?.(room.id)}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 text-red-600 font-semibold rounded-xl hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1 transition"
-                aria-label={`Delete room ${room.slug}`}
-                type="button"
-              >
-                <Trash2 className="w-5 h-5" />
-                Delete
-              </button>
-            </div>
+            </article>
           ))}
         </div>
       )}

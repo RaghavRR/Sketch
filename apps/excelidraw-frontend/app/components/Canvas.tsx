@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IconButton } from "./IconButton";
+import { TopBar } from "./TopBar";
 import {
   Circle,
   Pencil,
@@ -28,6 +29,20 @@ export function Canvas({
   useEffect(() => {
     if (gameRef.current) {
       gameRef.current.setTool(selectedTool);
+    }
+
+    // Update cursor style on tool change
+    if (canvasRef.current) {
+      if (selectedTool === "eraser") {
+        // Use custom eraser cursor if you have one, else fallback to crosshair
+        canvasRef.current.style.cursor = "url('/eraser-cursor.png'), crosshair";
+      } else if (selectedTool === "pencil") {
+        canvasRef.current.style.cursor = "crosshair";
+      } else if (selectedTool === "rect" || selectedTool === "circle") {
+        canvasRef.current.style.cursor = "default";
+      } else {
+        canvasRef.current.style.cursor = "default";
+      }
     }
   }, [selectedTool]);
 
@@ -66,6 +81,16 @@ export function Canvas({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const icons = [
+    { tool: "pencil", icon: <Pencil />, label: "Pencil" },
+    { tool: "line", icon: <Slash />, label: "Line" },
+    { tool: "arrow", icon: <ArrowRight />, label: "Arrow" },
+    { tool: "rect", icon: <RectangleHorizontalIcon />, label: "Rectangle" },
+    { tool: "circle", icon: <Circle />, label: "Circle" },
+    { tool: "text", icon: <TextCursorInput />, label: "Text" },
+    { tool: "eraser", icon: <Eraser />, label: "Eraser" },  // eraser icon here
+  ];
+
   return (
     <div className="h-screen w-screen bg-zinc-900 overflow-hidden relative">
       <canvas
@@ -74,40 +99,17 @@ export function Canvas({
         height={window.innerHeight}
         className="block border border-zinc-700 bg-zinc-900"
       />
-      <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
-    </div>
-  );
-}
 
-function Topbar({
-  selectedTool,
-  setSelectedTool,
-}: {
-  selectedTool: Tool;
-  setSelectedTool: (s: Tool) => void;
-}) {
-  const buttons: { tool: Tool; icon: JSX.Element; label: string }[] = [
-    { tool: "pencil", icon: <Pencil size={18} />, label: "Pencil" },
-    { tool: "line", icon: <Slash size={18} />, label: "Line" },
-    { tool: "arrow", icon: <ArrowRight size={18} />, label: "Arrow" },
-    { tool: "rect", icon: <RectangleHorizontalIcon size={18} />, label: "Rectangle" },
-    { tool: "circle", icon: <Circle size={18} />, label: "Circle" },
-    { tool: "text", icon: <TextCursorInput size={18} />, label: "Text" },
-    { tool: "eraser", icon: <Eraser size={18} />, label: "Eraser" }
-  ];
-
-  return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50">
-      <div className="flex gap-3 bg-zinc-800/90 backdrop-blur-md px-4 py-2 rounded-xl shadow-xl border border-zinc-700">
-        {buttons.map(({ tool, icon, label }) => (
-          <IconButton
-            key={tool}
-            onClick={() => setSelectedTool(tool)}
-            activated={selectedTool === tool}
-            icon={icon}
-            title={label}
-          />
-        ))}
+      <div className="absolute top-0 left-0 w-full z-50">
+        <TopBar
+          roomName={roomId} // Show roomName on the right side
+          icons={icons.map(({ tool, icon, label }) => ({
+            icon,
+            title: label,
+            activated: selectedTool === tool,
+            onClick: () => setSelectedTool(tool),
+          }))}
+        />
       </div>
     </div>
   );
