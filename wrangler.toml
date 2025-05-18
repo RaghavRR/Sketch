@@ -1,11 +1,5 @@
-# wrangler.toml
-
 name = "sketch-io"
 compatibility_date = "2024-06-01"
 
-# This is REQUIRED for Cloudflare Pages
-pages_build_output_dir = "./out"
-
-
 [build]
-upload = { format = "directory", dir = "./.vercel/output/static" }
+upload = { format = "directory", dir = "./out" }
