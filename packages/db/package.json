@@ -9,7 +9,8 @@
   "scripts": {
     "build": "tsc -b",
     "start": "node ./dist/types.js",
-    "dev": "npm run build && npm run start"
+    "dev": "npm run build && npm run start",
+    "postinstall": "prisma generate"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*"
