@@ -1,88 +1,135 @@
-<<<<<<< HEAD
-# Turborepo starter
+# 🧠 Sketch — Collaborative Real-Time Teaching Whiteboard
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Sketch** is a real-time, collaborative whiteboard application built for online teaching and interactive sessions — inspired by tools like [Excalidraw](https://excalidraw.com/), but fully custom-built without using any external drawing libraries.
 
-## Using this example
+With Sketch, teachers can visually explain concepts using shapes, arrows, text, and freehand drawings in a virtual room that students can join via a unique room ID.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## 🚀 Features
 
-## What's inside?
+- ✍️ **Real-Time Collaborative Drawing**  
+  Draw with students in real-time using **WebSocket-powered canvas**.
 
-This Turborepo includes the following packages/apps:
+- 🟢 **Custom Built Drawing Tools** (No Libraries!)  
+  Includes: Circle, Rectangle, Pencil, Line, Arrow, Text, and Eraser —  
+  All built from scratch using **canvas** and **physics-based logic**.
 
-### Apps and Packages
+- 🔐 **Authentication System**  
+  Includes full **Sign In / Sign Up** flow with secure sessions.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- 🧑‍🏫 **Create & Share Teaching Rooms**  
+  Teachers can create unique rooms and share Room IDs with students.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- 🧑‍🎓 **Multi-User Participation**  
+  Students can join the room simultaneously and see real-time updates.
 
-### Utilities
+- 🖼️ **Modern UI & Landing Page**  
+  Clean and responsive landing page for a great first impression.
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## 📸 Screenshots
 
-### Build
+Take a visual tour of the app 👇
 
-To build all apps and packages, run the following command:
+### 🟣 1. Landing Page  
+A clean, welcoming homepage to explain the app and encourage sign-up.
 
-```
-cd my-turborepo
-pnpm build
-```
+---<img width="903" alt="landing page" src="https://github.com/user-attachments/assets/c6d9388e-8a40-49f0-a057-38c9c75e1763" />
 
-### Develop
 
-To develop all apps and packages, run the following command:
+### 🔐 2. Sign In  
+Secure login for returning users.
 
-```
-cd my-turborepo
-pnpm dev
-```
+<img width="865" alt="signin" src="https://github.com/user-attachments/assets/93787f48-2ddd-4bd9-a1cf-868ad682aaaa" />
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+### 📝 3. Sign Up  
+Quick registration with minimal fields.
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+<img width="817" alt="signup" src="https://github.com/user-attachments/assets/c6996b9b-d3e9-499c-b992-34fc42bf688a" />
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+---
 
-```
-cd my-turborepo
-npx turbo login
-```
+### 🧑‍🏫 4. Dashboard  
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Teachers can create a room and get a unique Room ID to share with students.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+<img width="819" alt="dashbaord" src="https://github.com/user-attachments/assets/ef193e30-489d-4cd1-bbab-e7b85e7df61e" />
 
-```
-npx turbo link
-```
+---
 
-## Useful Links
+### ✍️ 5. Canvas
+Fully interactive real-time drawing space with tools like:
+- Pencil, Line, Arrow
+- Rectangle, Circle
+- Eraser, Text
+- 
+<img width="952" alt="canvas" src="https://github.com/user-attachments/assets/862b969e-1c6d-48b6-bf5a-9f45eb6ad789" />
 
-Learn more about the power of Turborepo:
+---
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
-=======
-# sketch.io
->>>>>>> 2018b61172e22ea0f607ac6720d094dce33ecc4d
+> 🧠 All drawings are rendered using manually written physics-based DOM logic (not Canvas API), and updates sync live using WebSockets.
+
+
+
+
+## 🧱 Tech Stack
+
+| Area                | Tech                                             |
+|---------------------|--------------------------------------------------|
+| Framework           | **Next.js** (App Router)                         |
+| Architecture        | **Turborepo Monorepo**                           |
+| Backend             | **Prisma ORM** + **Neon Database**              |
+| Real-time Comm      | **WebSockets**                                   |
+| Frontend Drawing    | **Custom Physics-Based Logic (No Canvas API, No Libraries)** |
+| Authentication      | **Custom Built** (No Auth0, Clerk, Firebase etc.)|
+| Styling             | **Tailwind CSS** (assumed from UI)               |
+| Package Manager     | **pnpm**                                         |
+| Code Quality        | ESLint, Prettier, TypeScript                     |
+
+
+## 🧪 Getting Started (Run Locally)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/RaghavRR/Sketch.git
+cd Sketch
+
+# 2. Go inside each server folder and install dependencies
+
+# HTTP Server Setup
+cd apps/http-server
+pnpm install
+cp .env.example .env
+# Fill in your DATABASE_URL and other required variables
+
+# WebSocket Server Setup
+cd apps/ws-server
+pnpm install
+cp .env.example .env
+# Fill in WebSocket-related environment variables
+
+# Frontend Setup
+cd apps/sketch.io-frontend
+pnpm install
+cp .env.example .env
+
+# 3. Run servers in separate terminals
+
+# Terminal 1: Start HTTP server
+cd apps/http-server
+npm run dev
+
+# Terminal 2: Start WebSocket server
+cd apps/ws-server
+npm run dev
+
+# Terminal 3: Start Frontend
+cd apps/ketch.io-frontend
+npm run dev
+
+# 4. Open your browser at http://localhost:3000
+# Create a room, share the ID with students, and start teaching live!
